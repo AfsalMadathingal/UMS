@@ -1,0 +1,348 @@
+
+
+
+{{!-- nav bar --}}
+<nav class="navbar navbar-expand-lg   navbar-dark bg-dark navbaradmin">
+  <div class="container-fluid navtext ">
+    <a class="navbar-brand" href="#">Welcome Admin Pannel</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <div class="navbar-nav me-auto"> 
+        <a class="nav-link active" aria-current="page" href="#">Home</a>
+        <a class="nav-link" href="#">User details</a>
+        <a class="nav-link" href="#">Settings</a>
+      </div>
+
+      {{!-- Create User  --}}
+    <button  
+    type="button" class="btn btn-success  me-5 " data-bs-toggle="modal" data-bs-target="#createModal" 
+    >Creat New User
+    </button>
+    {{!-- Create User  --}}
+
+  
+      <form method="post" class="d-flex" action="/admin/logout" >
+        <button class="btn btn-danger me-md-2" type="submit">Log out</button>
+      </form>
+    </div>
+  </div>
+</nav>
+{{!-- nav bar ends here --}}
+{{#if CreateuserExists}}
+<h1 class="CreationErrorMsg">User Creation faild : Username or Email already Exists</h1>
+{{/if}}
+{{#if creationSuccess}}
+<h1 class="CreationSuccMsg"  >User Creation success</h1>
+{{/if}}
+{{#if DeleteSuccMsg}}
+<h1 class="DeleteSuccMsg"  >User Deletion success</h1>
+{{/if}}
+{{#if EditMsg}}
+<h1 class="DeleteSuccMsg"  >User Edit success</h1>
+{{/if}}
+{{#if Editerr}}
+<h1 class="CreationErrorMsg"  >User Edit Error</h1>
+{{/if}}
+<div class=" p-5 ">
+<table class="table border-danger  border-4   " id="Userdatatable">
+  <thead>
+    <tr>
+       <th scope="col">SL No</th>
+      <th scope="col">User name</th>
+      <th scope="col">Password</th>
+      <th scope="col">Email Id</th>
+      <th scope="col">Edit/Delete</th>
+    </tr>
+  </thead>
+  <tbody>
+  {{#each userdetails}}
+   <tr>
+  <td>{{this.index}}</td>
+  <td>{{this.user_name}}</td>
+  <td>{{this.password}}</td>
+  <td>{{this.user_email}}</td>
+  <td>
+    <button 
+    type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-username="{{this.user_name}}" 
+    data-bs-email="{{this.user_email}}" 
+    data-bs-password="{{this.password}}"
+    >Edit</button>
+
+    <button 
+    type="button" data-bs-toggle="modal" 
+    data-bs-target="#deleteModal"
+    data-bs-username="{{this.user_name}}" 
+    data-bs-email="{{this.user_email}}" 
+    data-bs-password="{{this.password}}" 
+    class="btn btn-danger">Delete</button>
+  </td>
+  </tr>
+  {{/each}}
+  </tbody>
+</table>
+</div>
+
+{{!-- edit modal --}}
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form  action="/admin/edit" onsubmit="return Validation()" method="post">
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">User Name:</label>
+            <input  name="user_name" type="text" class="form-control" id="recipient-name" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name"  class="col-form-label">New User Name:</label>
+            <input name="user_name_new" id="newusername" type="text" class="form-control" >
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name"   class="col-form-label">Edit Email Id:</label>
+            <input name="user_email" type="email" class="form-control" id="email-id">
+          </div>
+          <h4 style="color: red;" id="editemailalert"></h4>
+          <div class="mb-3">
+            <label for="recipient-name"  class="col-form-label">Edit Password:</label>
+            <input name="password" type="text" class="form-control" id="password">
+          </div>
+          <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{{!-- delete Modal --}}
+
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form  action="/admin/delete" method="delete">
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">User Name:</label>
+            <input  name="user_name" type="text" class="form-control" id="recipient-name" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name"  class="col-form-label">Email Id:</label>
+            <input  type="text" class="form-control" id="email-id" readonly>
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name"  class="col-form-label">Password:</label>
+            <input  type="text" class="form-control" id="password" readonly>
+          </div>
+          <div class="modal-footer">
+        <button id="deleteuser" type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+        <button  type="submit" class="btn btn-primary">Yes</button>
+      </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{{!-- create user Modal --}}
+
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel"></h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form  action="/admin/create" method="post" onsubmit="return createValidation()">
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">User Name:</label>
+            <input  name="user_name" type="text" class="form-control" id="recipient-name" required>
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name"  class="col-form-label">Email Id:</label>
+            <input  type="email" name="user_email" class="form-control" id="createEmail" required>
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name"  class="col-form-label">Password:</label>
+            <input  type="password" name="password"  class="form-control" id="Cpassword" required>
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name"  class="col-form-label">Confirm Password:</label>
+            <input  type="password" name="confirm_password"  class="form-control" id="confirmpassword" required >
+          </div>
+          <h4 style="color: red;" id="createmailalert"></h4>
+          <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" class="btn btn-primary" >Create</button>
+      </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<!-- DataTables Core JavaScript -->
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+
+<!-- DataTables jQuery UI Integration -->
+<script src="https://cdn.datatables.net/1.13.7/js/dataTables.jqueryui.min.js"></script>
+
+<!-- DataTables Scroller Extension -->
+<script src="https://cdn.datatables.net/scroller/2.1.1/js/dataTables.scroller.min.js"></script>
+
+
+
+<script>
+
+
+
+
+  const exampleModal = document.getElementById('exampleModal');
+   const deleteModal = document.getElementById('deleteModal');
+   const createModal = document.getElementById('createModal');
+
+  if (exampleModal) {
+    exampleModal.addEventListener('show.bs.modal', event => {
+      // Button that triggered the modal
+      const button = event.relatedTarget;
+
+      // Extract info from data-bs-* attributes
+      const username = button.getAttribute('data-bs-username');
+      const email = button.getAttribute('data-bs-email');
+      const password = button.getAttribute('data-bs-password');
+
+      // Update the modal's content.
+      const modalTitle = exampleModal.querySelector('.modal-title');
+      const usernameInput = exampleModal.querySelector('#recipient-name');
+      const emailInput = exampleModal.querySelector('#email-id');
+      const passwordInput = exampleModal.querySelector('#password');
+      const NewName = exampleModal.querySelector('#newusername');
+
+      modalTitle.textContent = `Edit Details of ${username}`;
+      usernameInput.value = username; // Set the username value
+      emailInput.value = email; // Set the email value
+      passwordInput.value = password; // Set the password value
+      NewName.value=username
+
+
+    }); 
+    }
+
+    if (deleteModal) {
+    deleteModal.addEventListener('show.bs.modal', event => {
+        // Button that triggered the modal
+        const button = event.relatedTarget;
+
+        // Extract info from data-bs-* attributes
+        const username = button.getAttribute('data-bs-username');
+        const email = button.getAttribute('data-bs-email');
+        const password = button.getAttribute('data-bs-password');
+
+        // Update the modal's content.
+        const modalTitle = deleteModal.querySelector('.modal-title'); 
+        const usernameInput = deleteModal.querySelector('#recipient-name'); 
+        const emailInput = deleteModal.querySelector('#email-id');
+        const passwordInput = deleteModal.querySelector('#password');
+
+        modalTitle.textContent = `Do you Want to Delete this user`;
+        usernameInput.value = username;
+        emailInput.value = email;
+        passwordInput.value = password;
+    });
+}
+
+ if (createModal) {
+    createModal.addEventListener('show.bs.modal', event => {
+        // Button that triggered the modal
+        const button = event.relatedTarget;
+
+
+        // Update the modal's content.
+        const modalTitle = createModal.querySelector('.modal-title'); 
+  
+
+        modalTitle.textContent = `Please Provide the following to create new user`;
+        
+    });
+}
+
+
+
+function  Validation()
+{
+
+  let password=document.getElementById("Cpassword").value
+  let confirmpassword=document.getElementById('confirmpassword').value
+  let email=document.getElementById('email-id').value
+  let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ 
+
+
+  let alert=document.getElementById('alert')
+  let emailalert=document.getElementById('editemailalert')
+
+  if(password!=confirmpassword)
+  {
+    alert.innerHTML="Password Not Matching"
+    return false
+  }else if(!email.match(emailRegex))
+  {
+     emailalert.innerHTML="Email Not Valid"
+    return false
+  }else
+  {
+    
+    return true
+  }
+
+}
+
+function  createValidation()
+{
+
+  
+  let email=document.getElementById('createEmail').value
+  let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  let emailalert=document.getElementById('createmailalert')
+
+  if(!email.match(emailRegex))
+  {
+    emailalert.innerHTML="Email Not Valid"
+
+    return false
+    
+  }else
+  {
+   
+    return true
+  }
+
+}
+
+
+
+//data table 
+
+$(document).ready( function () {
+    $('#Userdatatable').DataTable({
+      
+    });
+} );
+
+
+</script>
