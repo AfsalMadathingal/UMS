@@ -7,14 +7,13 @@ const userhelper= require("../helpers/userHelper/userHelper");
 
 //number of salt rounds for bcrypt
 const saltRounds=10
+
+//variables for sending allerts
 let CreateuserExists=false;
 let creationSuccess=false;
 let DeleteSuccMsg=false;
 let EditMsg=false;
 let Editerr=false;
-
-
-
 
 
 
@@ -45,6 +44,7 @@ router.get('/dash',(req,res)=>{
         EditMsg=false;
         Editerr=false;
         
+        
     })
     }else
     {
@@ -73,6 +73,7 @@ router.get('/',  (req,res)=>{
 
 
 
+//admin validation
 router.post('/login',  (req,res)=>{
    
     login(req.body).then((result)=>{
@@ -120,11 +121,10 @@ router.post('/edit', (req,res)=>{
     updateUser(data).then((result)=>{
         if (result)
         {
-            console.log("if");
             EditMsg=true
             res.redirect('/admin/dash');
         }else
-        {   console.log("else");
+        {  
             Editerr=true
             res.redirect('/admin/dash');
         }
@@ -135,9 +135,10 @@ router.post('/edit', (req,res)=>{
 
 //admin deleting route
 
-router.get('/delete', (req,res)=>{
+router.post('/delete', (req,res)=>{
+
     //adding every datas to data variable
-    const data= req.query
+    const data= req.body
 
     deleteUser(data).then((result)=>{
         if(result.deletedCount)
@@ -153,11 +154,12 @@ router.get('/delete', (req,res)=>{
     
 })
 
+
 //admin Create New user
 
 router.post('/create',(req,res)=>{
 
-
+    
     let data=
         {
             user_name: req.body.user_name,

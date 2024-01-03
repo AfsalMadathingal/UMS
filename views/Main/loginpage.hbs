@@ -1,3 +1,4 @@
+
 <div class="page-content">
 		<div class="form-v8-content">
 			<div class="form-left">
@@ -12,7 +13,7 @@
 						<button class="tablinks" onclick="openCity(event, 'sign-up')">Sign Up</button>
 					</div>
 				</div>
-				<form class="form-detail" action="/signup" method="post" >
+				<form class="form-detail" action="/signup" method="post" onsubmit="return Validation()" >
 					<div class="tabcontent" id="sign-up">
 						<div class="form-row">
 							<label class="form-row-inner">
@@ -30,14 +31,14 @@
 						</div>
 						<div class="form-row">
 							<label class="form-row-inner">
-								<input type="password" name="password" id="password" class="input-text" required="true">
+								<input pattern="[A-Za-z0-9]+" type="password" name="password" id="password" class="input-text" required="true">
 								<span class="label">Password</span>
 								<span class="border"></span>
 							</label>
 						</div>
 						<div class="form-row">
 							<label class="form-row-inner">
-								<input type="password" name="comfirm_password" id="comfirm_password" class="input-text" required>
+								<input pattern="[A-Za-z0-9]+" type="password" name="comfirm_password" id="comfirm_password" class="input-text" required>
 								<span class="label">Comfirm Password</span>
 								<span class="border"></span>
 							</label>
@@ -47,21 +48,23 @@
 							>
 							<h3 style="{{color}}" >{{alert}}</h3>
 						</div>
-						
+						<h3 style="color: red;" id="alert"></h3>
+						<h3 style="color: red;" id="emailalert"></h3>
+						<h3 style="color: red;" id="namealert"></h3>
 					</div>
 				</form>
-				<form class="form-detail" action="/signin" method="post">
+				<form class="form-detail" action="/signin" method="post" >
 					<div class="tabcontent" id="sign-in">
 						<div class="form-row">
 							<label class="form-row-inner">
-								<input type="text" name="user_name" id="full_name_1" class="input-text" required>
+								<input pattern="[A-Za-z0-9]+" type="text" name="user_name" id="full_name_1" class="input-text" required>
 								<span class="label">Username</span>
 		  						<span class="border"></span>
 							</label>
 						</div>
 						<div class="form-row">
 							<label class="form-row-inner">
-								<input type="password" name="password" id="password_1" class="input-text" required>
+								<input pattern="[A-Za-z0-9]+" type="password" name="password" id="password_1" class="input-text" required>
 								<span class="label">Password</span>
 								<span class="border"></span>
 							</label>
@@ -93,4 +96,41 @@
 
 		// Get the element with id="defaultOpen" and click on it
 		document.getElementById("defaultOpen").click();
+
+function  Validation()
+{
+
+  let password=document.getElementById("password").value
+  let confirmpassword=document.getElementById('comfirm_password').value
+  let email=document.getElementById('your_email').value
+  let name=document.getElementById('full_name').value
+  let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  let nameRegex=/^[A-Za-z0-9]+$/;
+
+
+  let alert=document.getElementById('alert')
+  let emailalert=document.getElementById('emailalert')
+  let nameAlert=document.getElementById('namealert')
+
+  if(password!=confirmpassword)
+  {
+    alert.innerHTML="Password Not Matching"
+    return false
+  }else if(!email.match(emailRegex))
+  {
+     emailalert.innerHTML="Email Not Valid"
+    return false
+  }else if(!name.match(nameRegex))
+  {
+    nameAlert.innerHTML="Space Not Allowed"
+    return false
+  }else
+  {
+	return true
+  }
+
+}
+
+
+
 	</script>

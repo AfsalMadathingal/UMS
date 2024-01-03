@@ -7,23 +7,44 @@ const { login, signup, findUser } = require('../helpers/userHelper/userHelper');
 const saltRounds=10
 
 
+//Signup Alerts 
+
+let successAlert=false;
+let wrongCred= false;
+
+
 router.get('/',(req,res)=>{
 
     if (req.session.user)
     {
         res.redirect('/homepage')
+    }else if(req.session.logout)
+    {
+          res.render('Main/loginpage',{tittle:"signup",alert:"Logout Success",color:"color: #7cff05;"})
+          req.session.logout=false
+      
+    }else if(successAlert)
+        
+    {
+        
+            res.render('Main/loginpage',{tittle:"signup",alert:"Registration successful",color:"color: #7cff05;"})
+            successAlert=false  
+        
+    }else if(wrongCred)
+    {
+        res.render('Main/loginpage',{tittle:"signup",alert:"Username or Email Already exists",color:"color: red;"})
+        wrongCred = false
     }else
     {
-        res.render('Main/loginpage')
+        res.render('Main/loginpage',{tittle:"signup",alert:"Please Enter Username and Password",color:"color: #caff00;"})
     }
-    
 
 })
 
 
 
 //user sign up
-router.post('/signup', async (req,res)=>{
+router.post('/signup', (req,res)=>{
 
 
     let data={
@@ -36,10 +57,14 @@ router.post('/signup', async (req,res)=>{
 
             if(result.success)
             {
-                res.render('Main/loginpage',{tittle:"signup",alert:"Registration successful",color:"color: #7cff05;"})
+
+                successAlert=true;
+                res.redirect('/')
+               
             }else
             {
-                res.render('Main/loginpage',{tittle:"signup",alert:"Username or Email Already exists",color:"color: red;"})
+                wrongCred=true
+                res.redirect('/')
             }
 
         })
@@ -67,13 +92,13 @@ router.post('/signin', (req,res)=>{
 
             req.session.passwordinvalid=true
             res.redirect('/signin')
-            // res.render('Main/loginpage',{tittle:"signup",alert:"Wrong Password",color:"color: red;"})
+           
 
         }else if(result.username)
         {
             req.session.usernameinvalid=true
             res.redirect('/signin')
-            // res.render('Main/loginpage',{tittle:"signup",alert:"Invalid Username",color:"color: red;"})
+            
         }
     })
 
@@ -141,7 +166,9 @@ router.post('/user/logout', (req,res)=>{
 if (req.session.user)
 {
     req.session.user=false
-    res.render('Main/loginpage',{tittle:"signup",alert:"Logout Success",color:"color: #7cff05;"})
+    req.session.logout=true
+    res.redirect('/')
+    // res.render('Main/loginpage',{tittle:"signup",alert:"Logout Success",color:"color: #7cff05;"})
 
 }else
 {

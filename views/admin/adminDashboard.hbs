@@ -1,5 +1,12 @@
 
+<style>
+  body
+  { height: 100vh;
+    background-repeat: repeat;
+    background-image: url(https://i.pinimg.com/736x/f0/1d/7d/f01d7d234aad1c9a6b7f5c5a6c7d524e.jpg);
 
+  } 
+</style>
 
 {{!-- nav bar --}}
 <nav class="navbar navbar-expand-lg   navbar-dark bg-dark navbaradmin">
@@ -54,6 +61,7 @@
       <th scope="col">Password</th>
       <th scope="col">Email Id</th>
       <th scope="col">Edit/Delete</th>
+     
     </tr>
   </thead>
   <tbody>
@@ -94,23 +102,24 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form  action="/admin/edit" onsubmit="return Validation()" method="post">
+        <form  action="/admin/edit" onsubmit="return editValidation()" method="POST">
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">User Name:</label>
-            <input  name="user_name" type="text" class="form-control" id="recipient-name" readonly>
+            <input   name="user_name" type="text" class="form-control" id="recipient-name" readonly>
           </div>
           <div class="mb-3">
             <label for="recipient-name"  class="col-form-label">New User Name:</label>
-            <input name="user_name_new" id="newusername" type="text" class="form-control" >
+            <input  name="user_name_new" id="newusername" type="text" class="form-control" >
+            <h6 id="editalert"style="color: red;"></h6>
           </div>
           <div class="mb-3">
             <label for="recipient-name"   class="col-form-label">Edit Email Id:</label>
-            <input name="user_email" type="email" class="form-control" id="email-id">
+            <input  name="user_email" type="email" class="form-control" id="email-id">
           </div>
           <h4 style="color: red;" id="editemailalert"></h4>
           <div class="mb-3">
             <label for="recipient-name"  class="col-form-label">Edit Password:</label>
-            <input name="password" type="text" class="form-control" id="password">
+            <input  name="password" type="text" class="form-control" id="password">
           </div>
           <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
@@ -132,7 +141,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form  action="/admin/delete" method="delete">
+        <form  action="/admin/delete" method="post">
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">User Name:</label>
             <input  name="user_name" type="text" class="form-control" id="recipient-name" readonly>
@@ -166,22 +175,23 @@
       <div class="modal-body">
         <form  action="/admin/create" method="post" onsubmit="return createValidation()">
           <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">User Name:</label>
-            <input  name="user_name" type="text" class="form-control" id="recipient-name" required>
+            <h6 id="createalert"style="color: red;"></h6>
+            <label  for="user-name" class="col-form-label">User Name:</label>
+            <input name="user_name" type="text" class="form-control" id="user-name" required>
           </div>
           <div class="mb-3">
             <label for="recipient-name"  class="col-form-label">Email Id:</label>
             <input  type="email" name="user_email" class="form-control" id="createEmail" required>
           </div>
+          <h6 style="color: red;" id="createmailalert"></h6>
           <div class="mb-3">
             <label for="recipient-name"  class="col-form-label">Password:</label>
-            <input  type="password" name="password"  class="form-control" id="Cpassword" required>
+            <input  pattern="[A-Za-z0-9]+"  type="password" name="password"  class="form-control" id="Cpassword" required>
           </div>
           <div class="mb-3">
             <label for="recipient-name"  class="col-form-label">Confirm Password:</label>
-            <input  type="password" name="confirm_password"  class="form-control" id="confirmpassword" required >
+            <input  pattern="[A-Za-z0-9]+"  type="password" name="confirm_password"  class="form-control" id="confirmpassword" required >
           </div>
-          <h4 style="color: red;" id="createmailalert"></h4>
           <div class="modal-footer">
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
         <button type="submit" class="btn btn-primary" >Create</button>
@@ -283,17 +293,18 @@
 
 
 
-function  Validation()
+function  editValidation()
 {
 
   let password=document.getElementById("Cpassword").value
   let confirmpassword=document.getElementById('confirmpassword').value
   let email=document.getElementById('email-id').value
-  let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/ 
-
-
+  let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  let nameRegex=/^[A-Za-z0-9]+$/;
   let alert=document.getElementById('alert')
   let emailalert=document.getElementById('editemailalert')
+  let namealert=document.getElementById('editalert')
+  let name=document.getElementById('newusername').value
 
   if(password!=confirmpassword)
   {
@@ -303,9 +314,13 @@ function  Validation()
   {
      emailalert.innerHTML="Email Not Valid"
     return false
+  }else if(!name.match(nameRegex))
+  {
+    namealert.innerHTML="No Space allowed"
+    
+    return false
   }else
   {
-    
     return true
   }
 
@@ -316,9 +331,11 @@ function  createValidation()
 
   
   let email=document.getElementById('createEmail').value
+  let name=document.getElementById('user-name').value
   let emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
+  let nameRegex=/^[A-Za-z0-9]+$/;
   let emailalert=document.getElementById('createmailalert')
+  let createalert=document.getElementById('createalert')
 
   if(!email.match(emailRegex))
   {
@@ -326,9 +343,13 @@ function  createValidation()
 
     return false
     
+  }else if(!name.match(nameRegex))
+  {
+
+    createalert.innerHTML="No Space allowed"
+    return false
   }else
   {
-   
     return true
   }
 

@@ -38,9 +38,10 @@ app.use(session({
 }))
 
 
-
+//Router
 app.use('/',userRoute)
 app.use('/admin',adminRoute)
+
 
 //error route
 app.use((req, res, next) => {
@@ -49,7 +50,7 @@ app.use((req, res, next) => {
 });
 
 
-
+//server
 app.listen(port,()=>
 {
     console.log("Listening to the server on http://localhost:3000");
